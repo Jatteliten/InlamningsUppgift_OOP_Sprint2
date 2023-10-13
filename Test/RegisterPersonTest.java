@@ -15,11 +15,9 @@ class RegisterPersonTest {
     RegisterPerson rp = new RegisterPerson();
     String testCustomersFilePath = "Test/Paying customers Test";
     String testWorkoutFilePath = "Test/Workout sheet Test";
-
     Person p1 = new Person("9006161234", "Daniel Isaksson", "2023-06-16");
     Person p2 = new Person("9403021234", "Sarah Wrengler", "2022-12-02");
     Person p3 = new Person("7608081234", "Malin Isaksson", "2021-02-02");
-
     ArrayList<Person> testList = new ArrayList<>(Arrays.asList(p1, p2, p3));
 
     @Test
@@ -32,7 +30,7 @@ class RegisterPersonTest {
     }
 
     @Test
-    void createPayingCustomerTest() {
+    void createCustomerTest() {
         Person expected = p1;
         String[] actualPersonArray = new String []{"9006161234", "Daniel Isaksson", "2023-06-16"};
         Person actual = rp.createCustomer(actualPersonArray);
