@@ -2,8 +2,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -182,7 +180,7 @@ class RegisterPersonTest {
             System.out.println("File not found");
         }
 
-        expectedBuilder.append("9006161234, Daniel Isaksson\n" + rp.formatDateToString(LocalDate.now()));
+        expectedBuilder.append("9006161234, Daniel Isaksson\n").append(rp.formatDateToString(LocalDate.now()));
 
         expected = expectedBuilder.toString();
         rp.createWorkoutForPayingCustomers(testWorkoutFilePath, p1);
