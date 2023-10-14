@@ -193,7 +193,7 @@ public class RegisterPerson {
             input = validateInput(input);
         }
 
-        return input;
+        return input.trim();
     }
 
     /**
