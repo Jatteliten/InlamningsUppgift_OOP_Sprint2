@@ -21,14 +21,15 @@ public class RegisterPerson {
     private Scanner scan;
     public boolean test = false;
 
+    /**
+     * Main method to run the program
+     */
     void run(){
         ArrayList<Person> customers = createCustomersFromFile(CUSTOMERS_FILE_PATH);
 
         while(programIsRunning) {
             String input = enterNameOrSocialSecurityNumber(null);
-            if(input.equalsIgnoreCase("print")){
-                printAll(customers);
-            }
+
             if (!input.equals(INVALID_NUMBER) && !input.equals(INPUT_IS_EMPTY)) {
                 boolean customer = checkIfPersonIsCustomer(input, customers);
                 boolean payingCustomer = false;
@@ -54,20 +55,44 @@ public class RegisterPerson {
         }
     }
 
+    /**
+     * Formats a given LocalDate object as a string.
+     *
+     * @param date The LocalDate object to format.
+     * @return A formatted string representation of the date.
+     */
     public String formatDateToString (LocalDate date){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return date.format(formatter);
     }
 
-    public LocalDate formatStringToDate (String date){
+    /**
+     * Parses a formatted date string into a LocalDate object.
+     *
+     * @param date The formatted date string.
+     * @return A LocalDate object representing the parsed date.
+     */
+    public LocalDate parseDateFromString(String date){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(date, formatter);
     }
 
+    /**
+     * Create a Person object from an array of customer information.
+     *
+     * @param customerFromFile An array containing customer information.
+     * @return A Person object created from the information.
+     */
     public Person createCustomer(String[] customerFromFile){
-        return new Person(customerFromFile[0], customerFromFile[1], formatStringToDate(customerFromFile[2]));
+        return new Person(customerFromFile[0], customerFromFile[1], parseDateFromString(customerFromFile[2]));
     }
 
+    /**
+     * Reads customer information from a file and creates a list of Person objects.
+     *
+     * @param filePath The path to the file containing customer information.
+     * @return A list of Person objects created from the file data.
+     */
     public ArrayList<Person> createCustomersFromFile(String filePath){
         String reader;
         ArrayList<Person> payingCustomersTemp = new ArrayList<>();
@@ -84,15 +109,22 @@ public class RegisterPerson {
                 payingCustomersTemp.add(p);
             }
         } catch (FileNotFoundException e) {
-            System.out.println("File could not be found");
+            System.out.println("File '" + filePath + "' could not be found");
             e.printStackTrace();
         } catch (IOException e) {
-            System.out.println("Unknown error with file occurred");
+            System.out.println("Unknown error with file '" + filePath + "' occurred");
             e.printStackTrace();
         }
         return payingCustomersTemp;
     }
 
+    /**
+     * Checks if a given name or social security number corresponds to a customer in the list.
+     *
+     * @param nameOrSocialSecurityNumber The name or social security number to check.
+     * @param payingCustomers A list of Person objects representing customers.
+     * @return True if the name or SSN matches a customer; false otherwise.
+     */
     public boolean checkIfPersonIsCustomer(String nameOrSocialSecurityNumber, ArrayList<Person> payingCustomers){
         boolean check = false;
         for(Person p: payingCustomers){
@@ -105,25 +137,48 @@ public class RegisterPerson {
         return check;
     }
 
+    /**
+     * Checks if a person is a paying customer based on their membership payment date.
+     *
+     * @param customer The Person object to check.
+     * @return True if the customer is a paying customer; false otherwise.
+     */
     public boolean checkIfPersonIsPayingCustomer(Person customer){
         return (customer.getMemberShipPaidDate().isAfter(LocalDate.now().minusYears(1)));
     }
 
-
+    /**
+     * Checks if the input consists only of numeric characters.
+     *
+     * @param input The input string to check.
+     * @return True if the input contains only numeric characters; false otherwise.
+     */
     public boolean checkIfInputIsOnlyNumbers(String input){
         return input.matches("\\d+");
     }
 
+    /**
+     * Checks if a social security number input has the correct length (10 characters).
+     *
+     * @param socialSecurityNumber The social security number to check.
+     * @return True if the SSN has the correct length; false otherwise.
+     */
     public boolean checkIfSocialSecurityInputIsLongEnough(String socialSecurityNumber){
         return socialSecurityNumber.length() == 10;
     }
 
+    /**
+     * Reads a name or social security number from the user and performs validation.
+     *
+     * @param testString A test input string (for testing purposes) or null for user input.
+     * @return The validated name or social security number or special constants (e.g., QUIT, INPUT_IS_EMPTY).
+     */
     public String enterNameOrSocialSecurityNumber(String testString){
         String input;
 
         if(!test) {
             scan = new Scanner(System.in);
-            System.out.println("Please enter the name or SSN (12 numbers) of the person who just entered " +
+            System.out.println("Please enter the name or SSN (10 numbers) of the person who just entered the gym." +
                     "\n[Type '" + QUIT + "' to exit program]: ");
         }else{
             scan = new Scanner(testString);
@@ -141,16 +196,22 @@ public class RegisterPerson {
         return input;
     }
 
+    /**
+     * Validates user input, ensuring it is not empty or SSN is incorrectly formatted.
+     *
+     * @param input The input to validate.
+     * @return The validated input or a constant indicating an error (e.g., INPUT_IS_EMPTY, INVALID_NUMBER).
+     */
     public String validateInput(String input){
         if (input.isEmpty()){
             if(!test) {
-                System.out.println("Person or SSN field cannot be empty");
+                System.out.println("Person or SSN input cannot be empty");
             }
             return INPUT_IS_EMPTY;
         } else if(checkIfInputIsOnlyNumbers(input)){
             if(!checkIfSocialSecurityInputIsLongEnough(input)){
                 if(!test) {
-                    System.out.println("The SSN you have entered is not long enough");
+                    System.out.println("The SSN you have entered is not long enough. 10 numbers are required");
                 }
                 return INVALID_NUMBER;
             }
@@ -158,6 +219,14 @@ public class RegisterPerson {
         return input;
     }
 
+    /**
+     * Generates a message indicating the customer's status (e.g., not a customer, paying customer).
+     *
+     * @param input The name or SSN of the person.
+     * @param currentCustomer True if the person is a customer; false otherwise.
+     * @param payingCustomer True if the person is a paying customer; false otherwise.
+     * @return A message describing the customer's status.
+     */
     public String print(String input, boolean currentCustomer, boolean payingCustomer){
         if(!currentCustomer){
             return input + " is not a customer";
@@ -170,6 +239,12 @@ public class RegisterPerson {
         }
     }
 
+    /**
+     * Creates a workout entry for a paying customer and appends it to the workout sheet file.
+     *
+     * @param workOutFilePath The path to the workout sheet file.
+     * @param person The paying customer for whom the workout entry is created.
+     */
     public void createWorkoutForPayingCustomers(String workOutFilePath, Person person){
         try {
             File file = new File(workOutFilePath);
@@ -191,13 +266,6 @@ public class RegisterPerson {
         } catch (IOException e){
             e.printStackTrace();
             System.out.println("Error while handling file: " + workOutFilePath);
-        }
-    }
-
-    public void printAll(ArrayList<Person> people){
-        for(Person p: people){
-            System.out.println(p.getName());
-            System.out.println(p.getMemberShipPaidDate());
         }
     }
 

@@ -37,9 +37,9 @@ class RegisterPersonTest {
     }
 
     @Test
-    void formatStringToDateTest(){
+    void parseDateFromStringTest(){
         LocalDate expected = LocalDate.of(1990, 6, 16);
-        LocalDate actual = rp.formatStringToDate("1990-06-16");
+        LocalDate actual = rp.parseDateFromString("1990-06-16");
 
         Assertions.assertEquals(expected, actual);
     }
