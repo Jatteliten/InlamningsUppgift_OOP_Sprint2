@@ -37,6 +37,14 @@ class RegisterPersonTest {
     }
 
     @Test
+    void formatStringToDateTest(){
+        LocalDate expected = LocalDate.of(1990, 6, 16);
+        LocalDate actual = rp.formatStringToDate("1990-06-16");
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
     void createCustomerTest() {
         Person expected = p1;
         String[] actualPersonArray = new String []{"9006161234", "Daniel Isaksson", "2023-06-16"};

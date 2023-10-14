@@ -86,8 +86,8 @@ public class RegisterPerson {
         } catch (FileNotFoundException e) {
             System.out.println("File could not be found");
             e.printStackTrace();
-        } catch (Exception e) {
-            System.out.println("Unknown error occurred");
+        } catch (IOException e) {
+            System.out.println("Unknown error with file occurred");
             e.printStackTrace();
         }
         return payingCustomersTemp;
@@ -124,7 +124,7 @@ public class RegisterPerson {
         if(!test) {
             scan = new Scanner(System.in);
             System.out.println("Please enter the name or SSN (12 numbers) of the person who just entered " +
-                    "\n[Type 'quit' to exit program]: ");
+                    "\n[Type '" + QUIT + "' to exit program]: ");
         }else{
             scan = new Scanner(testString);
         }
