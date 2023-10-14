@@ -151,11 +151,15 @@ public class RegisterPerson {
 
     public String validateInput(String input){
         if (input.isEmpty()){
-            System.out.println("Person or SSN field cannot be empty");
+            if(!test) {
+                System.out.println("Person or SSN field cannot be empty");
+            }
             return INPUT_IS_EMPTY;
         } else if(checkIfInputIsOnlyNumbers(input)){
             if(!checkIfSocialSecurityInputIsLongEnough(input)){
-                System.out.println("The SSN you have entered is not long enough");
+                if(!test) {
+                    System.out.println("The SSN you have entered is not long enough");
+                }
                 return INVALID_NUMBER;
             }
         }

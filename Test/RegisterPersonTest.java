@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +19,11 @@ class RegisterPersonTest {
     Person p3 = new Person("7608081234", "Malin Isaksson", "2021-02-02");
     ArrayList<Person> testList = new ArrayList<>(Arrays.asList(p1, p2, p3));
 
+
+    @BeforeEach
+    public void setup(){
+        rp.test = true;
+    }
     @Test
     void formatDateToStringTest() {
         String expected = "1990-06-16";
@@ -39,7 +45,7 @@ class RegisterPersonTest {
     }
 
     @Test
-    void readCustomersFromFileTest(){
+    void createCustomersFromFileTest(){
         ArrayList<Person> expected = testList;
         ArrayList<Person> actual = rp.createCustomersFromFile(testCustomersFilePath);
 
@@ -117,8 +123,6 @@ class RegisterPersonTest {
 
     @Test
     void enterNameOrSocialSecurityNumber(){
-        rp.test = true;
-
         String expected = "Daniel Isaksson";
         String actual = rp.enterNameOrSocialSecurityNumber("Daniel Isaksson");
         Assertions.assertEquals(expected, actual);
