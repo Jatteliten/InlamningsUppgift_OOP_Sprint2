@@ -26,6 +26,9 @@ public class RegisterPerson {
 
         while(programIsRunning) {
             String input = enterNameOrSocialSecurityNumber(null);
+            if(input.equalsIgnoreCase("print")){
+                printAll(customers);
+            }
             if (!input.equals(INVALID_NUMBER) && !input.equals(INPUT_IS_EMPTY)) {
                 boolean customer = checkIfPersonIsCustomer(input, customers);
                 boolean payingCustomer = false;
@@ -39,7 +42,7 @@ public class RegisterPerson {
                             break;
                         }
                     }
-                    if(person != null && !checkIfPersonIsReturningCustomer(person)){
+                    if(person != null && checkIfPersonIsPayingCustomer(person)){
                         payingCustomer = true;
                         createWorkoutForPayingCustomers(WORKOUT_SHEET, person);
                     }
@@ -53,12 +56,16 @@ public class RegisterPerson {
 
     public String formatDateToString (LocalDate date){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
         return date.format(formatter);
     }
 
+    public LocalDate formatStringToDate (String date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(date, formatter);
+    }
+
     public Person createCustomer(String[] customerFromFile){
-        return new Person(customerFromFile[0], customerFromFile[1], customerFromFile[2]);
+        return new Person(customerFromFile[0], customerFromFile[1], formatStringToDate(customerFromFile[2]));
     }
 
     public ArrayList<Person> createCustomersFromFile(String filePath){
@@ -98,25 +105,10 @@ public class RegisterPerson {
         return check;
     }
 
-    public boolean checkIfPersonIsReturningCustomer(Person customer){
-        LocalDate today = LocalDate.now();
-        String todayString = formatDateToString(today);
-
-        if (checkYearOfString(customer.getMemberShipPaidDate()) == (checkYearOfString(todayString) - 1)
-                && checkMonthOfString(customer.getMemberShipPaidDate()) < checkMonthOfString(todayString)){
-            return true;
-        }else {
-            return (checkYearOfString(customer.getMemberShipPaidDate()) <= (checkYearOfString(todayString) - 2));
-        }
+    public boolean checkIfPersonIsPayingCustomer(Person customer){
+        return (customer.getMemberShipPaidDate().isAfter(LocalDate.now().minusYears(1)));
     }
 
-    public int checkYearOfString(String date){
-        return Integer.parseInt(date.substring(0, 4));
-    }
-
-    public int checkMonthOfString(String date){
-        return Integer.parseInt(date.substring(5, 7));
-    }
 
     public boolean checkIfInputIsOnlyNumbers(String input){
         return input.matches("\\d+");
@@ -199,6 +191,13 @@ public class RegisterPerson {
         } catch (IOException e){
             e.printStackTrace();
             System.out.println("Error while handling file: " + workOutFilePath);
+        }
+    }
+
+    public void printAll(ArrayList<Person> people){
+        for(Person p: people){
+            System.out.println(p.getName());
+            System.out.println(p.getMemberShipPaidDate());
         }
     }
 

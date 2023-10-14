@@ -1,9 +1,11 @@
+import java.time.LocalDate;
+
 public class Person {
 String socialSecurityNumber;
 String name;
-String memberShipPaidDate;
+LocalDate memberShipPaidDate;
 
-    public Person(String socialSecurityNumber, String name, String memberShipPaidDate) {
+    public Person(String socialSecurityNumber, String name, LocalDate memberShipPaidDate) {
         this.socialSecurityNumber = socialSecurityNumber;
         this.name = name;
         this.memberShipPaidDate = memberShipPaidDate;
@@ -25,11 +27,11 @@ String memberShipPaidDate;
         this.name = name;
     }
 
-    public String getMemberShipPaidDate() {
+    public LocalDate getMemberShipPaidDate() {
         return memberShipPaidDate;
     }
 
-    public void setMemberShipPaidDate(String memberShipPaidDate) {
+    public void setMemberShipPaidDate(LocalDate memberShipPaidDate) {
         this.memberShipPaidDate = memberShipPaidDate;
     }
 }

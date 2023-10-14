@@ -14,9 +14,12 @@ class RegisterPersonTest {
     RegisterPerson rp = new RegisterPerson();
     String testCustomersFilePath = "Test/Paying customers Test";
     String testWorkoutFilePath = "Test/Workout sheet Test";
-    Person p1 = new Person("9006161234", "Daniel Isaksson", "2023-06-16");
-    Person p2 = new Person("9403021234", "Sarah Wrengler", "2022-12-02");
-    Person p3 = new Person("7608081234", "Malin Isaksson", "2021-02-02");
+    Person p1 = new Person("9006161234", "Daniel Isaksson",
+            LocalDate.of(2023, 6, 16));
+    Person p2 = new Person("9403021234", "Sarah Wrengler",
+            LocalDate.of(2022, 12, 2));
+    Person p3 = new Person("7608081234", "Malin Isaksson",
+            LocalDate.of(2021, 2, 2));
     ArrayList<Person> testList = new ArrayList<>(Arrays.asList(p1, p2, p3));
 
 
@@ -73,32 +76,29 @@ class RegisterPersonTest {
     }
 
     @Test
-    void checkIfPersonIsReturningCustomerTest(){
+    void checkIfPersonIsPayingCustomerTest(){
         boolean expected = true;
-        boolean actual = rp.checkIfPersonIsReturningCustomer(p3);
-        Assertions.assertEquals(expected, actual);
 
-        actual = rp.checkIfPersonIsReturningCustomer(p1);
-        Assertions.assertNotEquals(expected, actual);
+        boolean actual = rp.checkIfPersonIsPayingCustomer(p1);
+        if(p1.getMemberShipPaidDate().isAfter(LocalDate.now().minusYears(1))) {
+            Assertions.assertEquals(expected, actual);
+        }else{
+            Assertions.assertNotEquals(expected, actual);
+        }
 
-        actual = rp.checkIfPersonIsReturningCustomer(p2);
-        Assertions.assertNotEquals(expected, actual);
-    }
+        actual = rp.checkIfPersonIsPayingCustomer(p2);
+        if(p2.getMemberShipPaidDate().isAfter(LocalDate.now().minusYears(1))) {
+            Assertions.assertEquals(expected, actual);
+        }else{
+            Assertions.assertNotEquals(expected, actual);
+        }
 
-    @Test
-    void checkYearOfStringTest(){
-        int expected = 2023;
-        int actual = rp.checkYearOfString(p1.getMemberShipPaidDate());
-
-        Assertions.assertEquals(expected, actual);
-    }
-
-    @Test
-    void checkMonthOfStringTest(){
-        int expected = 6;
-        int actual = rp.checkMonthOfString(p1.getMemberShipPaidDate());
-
-        Assertions.assertEquals(expected, actual);
+        actual = rp.checkIfPersonIsPayingCustomer(p3);
+        if(p3.getMemberShipPaidDate().isAfter(LocalDate.now().minusYears(1))) {
+            Assertions.assertEquals(expected, actual);
+        }else{
+            Assertions.assertNotEquals(expected, actual);
+        }
     }
 
     @Test
