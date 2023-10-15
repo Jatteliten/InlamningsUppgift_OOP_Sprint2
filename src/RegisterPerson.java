@@ -269,7 +269,7 @@ public class RegisterPerson {
         if (!Files.exists(path)){
         createFile(workOutFilePath);
             try (BufferedWriter firstLineWriter = Files.newBufferedWriter(path)) {
-                firstLineWriter.write("Workout sheet.txt:");
+                firstLineWriter.write("Workout sheet:");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
