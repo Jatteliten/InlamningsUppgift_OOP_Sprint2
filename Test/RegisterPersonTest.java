@@ -60,7 +60,7 @@ class RegisterPersonTest {
     @Test
     void createCustomersFromFileTest(){
         ArrayList<Person> expected = testList;
-        ArrayList<Person> actual = rp.createCustomersFromFile(testCustomersFilePath);
+        ArrayList<Person> actual = rp.createCustomerListFromFile(testCustomersFilePath);
 
         for(int i = 0; i < expected.size(); i++) {
             Assertions.assertEquals(expected.get(i).getName(), actual.get(i).getName());
@@ -164,15 +164,15 @@ class RegisterPersonTest {
     @Test
     void print(){
         String expected = "Daniel Isaksson is a paying customer";
-        String actual = rp.print("Daniel Isaksson", true, true);
+        String actual = rp.printIfPersonIsCustomer("Daniel Isaksson", true, true);
         Assertions.assertEquals(expected, actual);
 
         expected = "Daniel Isaksson is not a customer";
-        actual = rp.print("Daniel Isaksson", false, false);
+        actual = rp.printIfPersonIsCustomer("Daniel Isaksson", false, false);
         Assertions.assertEquals(expected, actual);
 
         expected = "Daniel Isaksson is a customer, but has not paid their fee";
-        actual = rp.print("Daniel Isaksson", true, false);
+        actual = rp.printIfPersonIsCustomer("Daniel Isaksson", true, false);
         Assertions.assertEquals(expected, actual);
     }
 

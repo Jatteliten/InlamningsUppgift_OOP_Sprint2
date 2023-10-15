@@ -26,17 +26,17 @@ public class RegisterPerson {
      * Main method to run the program
      */
     void run() {
-        ArrayList<Person> customers = createCustomersFromFile(FILE_PATH_CUSTOMERS);
+        ArrayList<Person> customers = createCustomerListFromFile(FILE_PATH_CUSTOMERS);
 
         while (programIsRunning) {
             String input = enterNameOrSocialSecurityNumber(null);
 
             if (!input.equals(INVALID_NUMBER) && !input.equals(INPUT_IS_EMPTY)) {
-                boolean customer = checkIfPersonIsCustomer(input, customers);
-                boolean payingCustomer = false;
+                boolean isCustomer = checkIfPersonIsCustomer(input, customers);
+                boolean isPayingCustomer = false;
                 Person person = null;
 
-                if (customer) {
+                if (isCustomer) {
                     for (Person p : customers) {
                         if (input.equalsIgnoreCase(p.getName()) ||
                                 input.equals(p.getSocialSecurityNumber())) {
@@ -45,12 +45,12 @@ public class RegisterPerson {
                         }
                     }
                     if (person != null && checkIfPersonIsPayingCustomer(person)) {
-                        payingCustomer = true;
+                        isPayingCustomer = true;
                         createWorkoutForPayingCustomers(FILE_PATH_WORKOUT_SHEET, person);
                     }
                 }
                 if (programIsRunning) {
-                    System.out.println(print(input, customer, payingCustomer));
+                    System.out.println(printIfPersonIsCustomer(input, isCustomer, isPayingCustomer));
                 }
             }
         }
@@ -94,7 +94,7 @@ public class RegisterPerson {
      * @param filePath The path to the file containing customer information.
      * @return A list of Person objects created from the file data.
      */
-    public ArrayList<Person> createCustomersFromFile(String filePath) {
+    public ArrayList<Person> createCustomerListFromFile(String filePath) {
         String reader;
         ArrayList<Person> payingCustomersTemp = new ArrayList<>();
         String[] customerSocialSecurityNumberAndName;
@@ -226,12 +226,12 @@ public class RegisterPerson {
      * Generates a message indicating the customer's status (e.g., not a customer, paying customer).
      *
      * @param input The name or SSN of the person.
-     * @param currentCustomer True if the person is a customer; false otherwise.
+     * @param isCurrentCustomer True if the person is a customer; false otherwise.
      * @param payingCustomer True if the person is a paying customer; false otherwise.
      * @return A message describing the customer's status.
      */
-    public String print(String input, boolean currentCustomer, boolean payingCustomer) {
-        if (!currentCustomer) {
+    public String printIfPersonIsCustomer(String input, boolean isCurrentCustomer, boolean payingCustomer) {
+        if (!isCurrentCustomer) {
             return input + " is not a customer";
         } else {
             if (!payingCustomer) {
