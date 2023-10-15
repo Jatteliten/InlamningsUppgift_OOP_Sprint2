@@ -207,14 +207,14 @@ class RegisterPersonTest {
         try {
             Path path = Paths.get(testWorkoutFilePath);
             if(!Files.exists(path)){
-                rp.createWorkoutForPayingCustomers(testWorkoutFilePath, p1);
+                rp.addWorkoutInFileForPayingCustomers(testWorkoutFilePath, p1);
             }
 
             expectedBuilder.append(new String(Files.readAllBytes(path)));
             expectedBuilder.append("\n9006161234, Daniel Isaksson\n").append(rp.formatDateToString(LocalDate.now()));
             expected = expectedBuilder.toString().trim();
 
-            rp.createWorkoutForPayingCustomers(testWorkoutFilePath, p1);
+            rp.addWorkoutInFileForPayingCustomers(testWorkoutFilePath, p1);
 
             actual = new String(Files.readAllBytes(path)).trim();
             Assertions.assertEquals(expected, actual);

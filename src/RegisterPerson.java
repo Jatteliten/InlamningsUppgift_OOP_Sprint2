@@ -46,7 +46,7 @@ public class RegisterPerson {
                     }
                     if (person != null && checkIfPersonIsPayingCustomer(person)) {
                         isPayingCustomer = true;
-                        createWorkoutForPayingCustomers(FILE_PATH_WORKOUT_SHEET, person);
+                        addWorkoutInFileForPayingCustomers(FILE_PATH_WORKOUT_SHEET, person);
                     }
                 }
                 if (programIsRunning) {
@@ -81,11 +81,11 @@ public class RegisterPerson {
     /**
      * Create a Person object from an array of customer information.
      *
-     * @param customerFromFile An array containing customer information.
+     * @param customerInfo An array containing customer information. {SSN, name, memberShipPaidDate}.
      * @return A Person object created from the information.
      */
-    public Person createCustomer(String[] customerFromFile) {
-        return new Person(customerFromFile[0], customerFromFile[1], parseDateFromString(customerFromFile[2]));
+    public Person createCustomer(String[] customerInfo) {
+        return new Person(customerInfo[0], customerInfo[1], parseDateFromString(customerInfo[2]));
     }
 
     /**
@@ -95,20 +95,17 @@ public class RegisterPerson {
      * @return A list of Person objects created from the file data.
      */
     public ArrayList<Person> createCustomerListFromFile(String filePath) {
-        String reader;
         ArrayList<Person> payingCustomersTemp = new ArrayList<>();
-        String[] customerSocialSecurityNumberAndName;
-        String[] customerInformation = new String[3];
 
-        Path path = Paths.get(filePath);
+        try (BufferedReader bf = Files.newBufferedReader(Paths.get(filePath))) {
+            String line;
+            while ((line = bf.readLine()) != null) {
+                String[] customerSocialSecurityNumberAndName = line.trim().split(",");
+                String SSN = customerSocialSecurityNumberAndName[0].trim();
+                String name = customerSocialSecurityNumberAndName[1].trim();
+                String memberShipPaidDate = bf.readLine().trim();
 
-        try (BufferedReader bf = Files.newBufferedReader(path)) {
-            while ((reader = bf.readLine()) != null) {
-                customerSocialSecurityNumberAndName = reader.trim().split(",");
-                customerInformation[0] = customerSocialSecurityNumberAndName[0];
-                customerInformation[1] = customerSocialSecurityNumberAndName[1].trim();
-                customerInformation[2] = bf.readLine();
-                Person p = createCustomer(customerInformation);
+                Person p = createCustomer(new String[]{SSN, name, memberShipPaidDate});
                 payingCustomersTemp.add(p);
             }
         } catch (FileNotFoundException e) {
@@ -263,7 +260,7 @@ public class RegisterPerson {
      * @param workOutFilePath The path to the workout sheet file.
      * @param person The paying customer for whom the workout entry is created.
      */
-    public void createWorkoutForPayingCustomers(String workOutFilePath, Person person) {
+    public void addWorkoutInFileForPayingCustomers(String workOutFilePath, Person person) {
         Path path = Paths.get(workOutFilePath);
 
         if (!Files.exists(path)){
