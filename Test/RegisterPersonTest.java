@@ -12,16 +12,16 @@ import java.util.Arrays;
 
 class RegisterPersonTest {
 
-    RegisterPerson rp = new RegisterPerson();
-    String testCustomersFilePath = "Test/Paying customers Test.txt";
-    String testWorkoutFilePath = "Test/Workout sheet Test.txt";
-    Person p1 = new Person("9006161234", "Daniel Isaksson",
+    private static final RegisterPerson rp = new RegisterPerson();
+    private static final String testCustomersFilePath = "Test/Paying customers Test.txt";
+    private static final String testWorkoutFilePath = "Test/Workout sheet Test.txt";
+    private static final Person p1 = new Person("9006161234", "Daniel Isaksson",
             LocalDate.of(2023, 6, 16));
-    Person p2 = new Person("9403021234", "Sarah Wrengler",
+    private static final Person p2 = new Person("9403021234", "Sarah Wrengler",
             LocalDate.of(2022, 12, 2));
-    Person p3 = new Person("7608081234", "Malin Isaksson",
+    private static final Person p3 = new Person("7608081234", "Malin Isaksson",
             LocalDate.of(2021, 2, 2));
-    ArrayList<Person> testList = new ArrayList<>(Arrays.asList(p1, p2, p3));
+    private static final ArrayList<Person> testList = new ArrayList<>(Arrays.asList(p1, p2, p3));
 
 
     @BeforeEach
