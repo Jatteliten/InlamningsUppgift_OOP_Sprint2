@@ -2,9 +2,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,8 +13,8 @@ import java.util.Arrays;
 class RegisterPersonTest {
 
     RegisterPerson rp = new RegisterPerson();
-    String testCustomersFilePath = "Test/Paying customers Test";
-    String testWorkoutFilePath = "Test/Workout sheet Test";
+    String testCustomersFilePath = "Test/Paying customers Test.txt";
+    String testWorkoutFilePath = "Test/Workout sheet Test.txt";
     Person p1 = new Person("9006161234", "Daniel Isaksson",
             LocalDate.of(2023, 6, 16));
     Person p2 = new Person("9403021234", "Sarah Wrengler",
@@ -176,39 +177,46 @@ class RegisterPersonTest {
     }
 
     @Test
+    void createFile() throws IOException {
+        Path path = Paths.get("Test/New file");
+        boolean expected = true;
+        boolean actual;
+
+        if(!Files.exists(path)){
+            Files.delete(path);
+        }
+        actual = Files.exists(path);
+        Assertions.assertNotEquals(expected,actual);
+
+        rp.createFile(path.toString());
+        actual = Files.exists(path);
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
     void createWorkoutForPayingCustomerTest() {
-        String reader;
         String expected;
         String actual;
         StringBuilder expectedBuilder = new StringBuilder();
-        StringBuilder actualBuilder = new StringBuilder();
 
-        try (BufferedReader bf = new BufferedReader(new FileReader(testWorkoutFilePath))) {
-            while ((reader = bf.readLine()) != null){
-                expectedBuilder.append(reader).append("\n");
+        try {
+            Path path = Paths.get(testWorkoutFilePath);
+            if(!Files.exists(path)){
+                rp.createWorkoutForPayingCustomers(testWorkoutFilePath, p1);
             }
-        } catch (IOException e) {
+
+            expectedBuilder.append(new String(Files.readAllBytes(path)));
+            expectedBuilder.append("\n9006161234, Daniel Isaksson\n").append(rp.formatDateToString(LocalDate.now()));
+            expected = expectedBuilder.toString().trim();
+
+            rp.createWorkoutForPayingCustomers(testWorkoutFilePath, p1);
+
+            actual = new String(Files.readAllBytes(path)).trim();
+            Assertions.assertEquals(expected, actual);
+        } catch(IOException e){
             e.printStackTrace();
-            System.out.println("File not found");
+            System.out.println("Error while reading from file: "+ testWorkoutFilePath);
         }
-
-        expectedBuilder.append("9006161234, Daniel Isaksson\n").append(rp.formatDateToString(LocalDate.now()));
-        expected = expectedBuilder.toString().trim();
-
-        rp.createWorkoutForPayingCustomers(testWorkoutFilePath, p1);
-
-        try (BufferedReader bf = new BufferedReader(new FileReader(testWorkoutFilePath))){
-            while ((reader = bf.readLine()) != null){
-                actualBuilder.append(reader).append("\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("File not found");
-        }
-
-        actual = actualBuilder.toString().trim();
-
-        Assertions.assertEquals(expected, actual);
 
     }
 

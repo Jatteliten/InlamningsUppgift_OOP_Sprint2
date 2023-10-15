@@ -1,10 +1,11 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -12,8 +13,8 @@ import java.util.Scanner;
 
 public class RegisterPerson {
 
-    private static final String CUSTOMERS_FILE_PATH = "src/Paying customers";
-    private static final String WORKOUT_SHEET = "src/Workout sheet";
+    private static final String FILE_PATH_CUSTOMERS = "src/Paying customers.txt.txt";
+    private static final String FILE_PATH_WORKOUT_SHEET = "src/Workout sheet.txt.txt";
     private static final String INVALID_NUMBER = "invalid number";
     private static final String INPUT_IS_EMPTY = "input is empty";
     private static final String QUIT = "quit";
@@ -24,10 +25,10 @@ public class RegisterPerson {
     /**
      * Main method to run the program
      */
-    void run(){
-        ArrayList<Person> customers = createCustomersFromFile(CUSTOMERS_FILE_PATH);
+    void run() {
+        ArrayList<Person> customers = createCustomersFromFile(FILE_PATH_CUSTOMERS);
 
-        while(programIsRunning) {
+        while (programIsRunning) {
             String input = enterNameOrSocialSecurityNumber(null);
 
             if (!input.equals(INVALID_NUMBER) && !input.equals(INPUT_IS_EMPTY)) {
@@ -35,20 +36,20 @@ public class RegisterPerson {
                 boolean payingCustomer = false;
                 Person person = null;
 
-                if(customer){
-                    for(Person p: customers){
-                        if(input.equalsIgnoreCase(p.getName()) ||
-                                input.equals(p.getSocialSecurityNumber())){
+                if (customer) {
+                    for (Person p : customers) {
+                        if (input.equalsIgnoreCase(p.getName()) ||
+                                input.equals(p.getSocialSecurityNumber())) {
                             person = p;
                             break;
                         }
                     }
-                    if(person != null && checkIfPersonIsPayingCustomer(person)){
+                    if (person != null && checkIfPersonIsPayingCustomer(person)) {
                         payingCustomer = true;
-                        createWorkoutForPayingCustomers(WORKOUT_SHEET, person);
+                        createWorkoutForPayingCustomers(FILE_PATH_WORKOUT_SHEET, person);
                     }
                 }
-                if(programIsRunning) {
+                if (programIsRunning) {
                     System.out.println(print(input, customer, payingCustomer));
                 }
             }
@@ -61,7 +62,7 @@ public class RegisterPerson {
      * @param date The LocalDate object to format.
      * @return A formatted string representation of the date.
      */
-    public String formatDateToString (LocalDate date){
+    public String formatDateToString(LocalDate date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return date.format(formatter);
     }
@@ -72,7 +73,7 @@ public class RegisterPerson {
      * @param date The formatted date string.
      * @return A LocalDate object representing the parsed date.
      */
-    public LocalDate parseDateFromString(String date){
+    public LocalDate parseDateFromString(String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(date, formatter);
     }
@@ -83,7 +84,7 @@ public class RegisterPerson {
      * @param customerFromFile An array containing customer information.
      * @return A Person object created from the information.
      */
-    public Person createCustomer(String[] customerFromFile){
+    public Person createCustomer(String[] customerFromFile) {
         return new Person(customerFromFile[0], customerFromFile[1], parseDateFromString(customerFromFile[2]));
     }
 
@@ -93,14 +94,16 @@ public class RegisterPerson {
      * @param filePath The path to the file containing customer information.
      * @return A list of Person objects created from the file data.
      */
-    public ArrayList<Person> createCustomersFromFile(String filePath){
+    public ArrayList<Person> createCustomersFromFile(String filePath) {
         String reader;
         ArrayList<Person> payingCustomersTemp = new ArrayList<>();
         String[] customerSocialSecurityNumberAndName;
         String[] customerInformation = new String[3];
 
-        try(BufferedReader bf = new BufferedReader(new FileReader(filePath))){
-            while((reader = bf.readLine()) != null){
+        Path path = Paths.get(filePath);
+
+        try (BufferedReader bf = Files.newBufferedReader(path)) {
+            while ((reader = bf.readLine()) != null) {
                 customerSocialSecurityNumberAndName = reader.trim().split(",");
                 customerInformation[0] = customerSocialSecurityNumberAndName[0];
                 customerInformation[1] = customerSocialSecurityNumberAndName[1].trim();
@@ -125,11 +128,11 @@ public class RegisterPerson {
      * @param payingCustomers A list of Person objects representing customers.
      * @return True if the name or SSN matches a customer; false otherwise.
      */
-    public boolean checkIfPersonIsCustomer(String nameOrSocialSecurityNumber, ArrayList<Person> payingCustomers){
+    public boolean checkIfPersonIsCustomer(String nameOrSocialSecurityNumber, ArrayList<Person> payingCustomers) {
         boolean check = false;
-        for(Person p: payingCustomers){
-            if(nameOrSocialSecurityNumber.equalsIgnoreCase(p.getName())
-                    || nameOrSocialSecurityNumber.equals(p.getSocialSecurityNumber())){
+        for (Person p : payingCustomers) {
+            if (nameOrSocialSecurityNumber.equalsIgnoreCase(p.getName())
+                    || nameOrSocialSecurityNumber.equals(p.getSocialSecurityNumber())) {
                 check = true;
                 break;
             }
@@ -143,7 +146,7 @@ public class RegisterPerson {
      * @param customer The Person object to check.
      * @return True if the customer is a paying customer; false otherwise.
      */
-    public boolean checkIfPersonIsPayingCustomer(Person customer){
+    public boolean checkIfPersonIsPayingCustomer(Person customer) {
         return (customer.getMemberShipPaidDate().isAfter(LocalDate.now().minusYears(1)));
     }
 
@@ -153,7 +156,7 @@ public class RegisterPerson {
      * @param input The input string to check.
      * @return True if the input contains only numeric characters; false otherwise.
      */
-    public boolean checkIfInputIsOnlyNumbers(String input){
+    public boolean checkIfInputIsOnlyNumbers(String input) {
         return input.matches("\\d+");
     }
 
@@ -163,7 +166,7 @@ public class RegisterPerson {
      * @param socialSecurityNumber The social security number to check.
      * @return True if the SSN has the correct length; false otherwise.
      */
-    public boolean checkIfSocialSecurityInputIsLongEnough(String socialSecurityNumber){
+    public boolean checkIfSocialSecurityInputIsLongEnough(String socialSecurityNumber) {
         return socialSecurityNumber.length() == 10;
     }
 
@@ -173,20 +176,20 @@ public class RegisterPerson {
      * @param testString A test input string (for testing purposes) or null for user input.
      * @return The validated name or social security number or special constants (e.g., QUIT, INPUT_IS_EMPTY).
      */
-    public String enterNameOrSocialSecurityNumber(String testString){
+    public String enterNameOrSocialSecurityNumber(String testString) {
         String input;
 
-        if(!test) {
+        if (!test) {
             scan = new Scanner(System.in);
             System.out.println("Please enter the name or SSN (10 numbers) of the person who just entered the gym." +
                     "\n[Type '" + QUIT + "' to exit program]: ");
-        }else{
+        } else {
             scan = new Scanner(testString);
         }
 
         input = scan.nextLine();
 
-        if(input.equalsIgnoreCase(QUIT)){
+        if (input.equalsIgnoreCase(QUIT)) {
             System.out.println("Good bye!");
             programIsRunning = false;
         } else {
@@ -202,15 +205,15 @@ public class RegisterPerson {
      * @param input The input to validate.
      * @return The validated input or a constant indicating an error (e.g., INPUT_IS_EMPTY, INVALID_NUMBER).
      */
-    public String validateInput(String input){
-        if (input.isEmpty()){
-            if(!test) {
+    public String validateInput(String input) {
+        if (input.isEmpty()) {
+            if (!test) {
                 System.out.println("Person or SSN input cannot be empty");
             }
             return INPUT_IS_EMPTY;
-        } else if(checkIfInputIsOnlyNumbers(input)){
-            if(!checkIfSocialSecurityInputIsLongEnough(input)){
-                if(!test) {
+        } else if (checkIfInputIsOnlyNumbers(input)) {
+            if (!checkIfSocialSecurityInputIsLongEnough(input)) {
+                if (!test) {
                     System.out.println("The SSN you have entered is not long enough. 10 numbers are required");
                 }
                 return INVALID_NUMBER;
@@ -227,15 +230,30 @@ public class RegisterPerson {
      * @param payingCustomer True if the person is a paying customer; false otherwise.
      * @return A message describing the customer's status.
      */
-    public String print(String input, boolean currentCustomer, boolean payingCustomer){
-        if(!currentCustomer){
+    public String print(String input, boolean currentCustomer, boolean payingCustomer) {
+        if (!currentCustomer) {
             return input + " is not a customer";
-        }else{
-            if(!payingCustomer){
+        } else {
+            if (!payingCustomer) {
                 return input + " is a customer, but has not paid their fee";
-            }else{
+            } else {
                 return input + " is a paying customer";
             }
+        }
+    }
+
+    /**
+     * Creates a file.
+     *
+     * @param filePath The path to where the file will be created
+     */
+    public void createFile(String filePath){
+        Path path = Paths.get(filePath);
+        try {
+            Files.createFile(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Failed to create the file " + filePath);
         }
     }
 
@@ -245,28 +263,25 @@ public class RegisterPerson {
      * @param workOutFilePath The path to the workout sheet file.
      * @param person The paying customer for whom the workout entry is created.
      */
-    public void createWorkoutForPayingCustomers(String workOutFilePath, Person person){
-        try {
-            File file = new File(workOutFilePath);
+    public void createWorkoutForPayingCustomers(String workOutFilePath, Person person) {
+        Path path = Paths.get(workOutFilePath);
 
-            if (!file.exists()) {
-                file.createNewFile();
-                try (BufferedWriter firstLineWriter = new BufferedWriter(new FileWriter(workOutFilePath))) {
-                    firstLineWriter.write("Workout sheet:");
-                } catch (IOException e){
-                    e.printStackTrace();
-                    System.out.println("Error while creating file: " + workOutFilePath);
-                }
+        if (!Files.exists(path)){
+        createFile(workOutFilePath);
+            try (BufferedWriter firstLineWriter = Files.newBufferedWriter(path)) {
+                firstLineWriter.write("Workout sheet.txt:");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
+        }
 
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(workOutFilePath, true))) {
-                writer.write("\n" + person.getSocialSecurityNumber() + ", " + person.getName() +
-                        "\n" + formatDateToString(LocalDate.now()));
-            }
-        } catch (IOException e){
+        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
+            writer.write("\n" + person.getSocialSecurityNumber() + ", " + person.getName() +
+                    "\n" + formatDateToString(LocalDate.now()));
+        } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Error while handling file: " + workOutFilePath);
         }
-    }
 
+    }
 }
