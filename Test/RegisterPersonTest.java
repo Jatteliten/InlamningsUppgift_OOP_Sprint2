@@ -27,6 +27,7 @@ class RegisterPersonTest {
     public void setup(){
         rp.test = true;
     }
+
     @Test
     void formatDateToStringTest() {
         String expected = "1990-06-16";
@@ -176,16 +177,15 @@ class RegisterPersonTest {
 
     @Test
     void createWorkoutForPayingCustomerTest() {
-        String expectedNextLine;
-        String actualNextLine;
+        String reader;
         String expected;
         String actual;
         StringBuilder expectedBuilder = new StringBuilder();
         StringBuilder actualBuilder = new StringBuilder();
 
         try (BufferedReader bf = new BufferedReader(new FileReader(testWorkoutFilePath))) {
-            while ((expectedNextLine = bf.readLine()) != null){
-                expectedBuilder.append(expectedNextLine).append("\n");
+            while ((reader = bf.readLine()) != null){
+                expectedBuilder.append(reader).append("\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -193,13 +193,13 @@ class RegisterPersonTest {
         }
 
         expectedBuilder.append("9006161234, Daniel Isaksson\n").append(rp.formatDateToString(LocalDate.now()));
+        expected = expectedBuilder.toString().trim();
 
-        expected = expectedBuilder.toString();
         rp.createWorkoutForPayingCustomers(testWorkoutFilePath, p1);
 
         try (BufferedReader bf = new BufferedReader(new FileReader(testWorkoutFilePath))){
-            while ((actualNextLine = bf.readLine()) != null){
-                actualBuilder.append(actualNextLine).append("\n");
+            while ((reader = bf.readLine()) != null){
+                actualBuilder.append(reader).append("\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
