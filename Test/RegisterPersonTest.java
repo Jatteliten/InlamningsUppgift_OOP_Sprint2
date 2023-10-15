@@ -177,13 +177,18 @@ class RegisterPersonTest {
     }
 
     @Test
-    void createFile() throws IOException {
+    void createFile() {
         Path path = Paths.get("Test/New file");
         boolean expected = true;
         boolean actual;
 
-        if(!Files.exists(path)){
-            Files.delete(path);
+        try {
+            if (Files.exists(path)) {
+                Files.delete(path);
+            }
+        } catch (IOException e){
+            e.printStackTrace();
+            System.out.println("Error while deleting file " + path);
         }
         actual = Files.exists(path);
         Assertions.assertNotEquals(expected,actual);
