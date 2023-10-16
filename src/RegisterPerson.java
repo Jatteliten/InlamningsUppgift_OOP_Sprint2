@@ -13,8 +13,8 @@ import java.util.Scanner;
 
 public class RegisterPerson {
 
-    private static final String FILE_PATH_CUSTOMERS = "src/Paying customers.txt.txt";
-    private static final String FILE_PATH_WORKOUT_SHEET = "src/Workout sheet.txt.txt";
+    private static final String FILE_PATH_CUSTOMERS = "src/Paying customers.txt";
+    private static final String FILE_PATH_WORKOUT_SHEET = "src/Workout sheet.txt";
     private static final String INVALID_NUMBER = "invalid number";
     private static final String INPUT_IS_EMPTY = "input is empty";
     private static final String QUIT = "quit";
