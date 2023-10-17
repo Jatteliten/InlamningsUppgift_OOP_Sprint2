@@ -113,22 +113,14 @@ class RegisterPersonTest {
 
     @Test
     void checkIfInputIsOnlyNumbersTest(){
-        boolean expected = true;
-        boolean actual = rp.checkIfInputIsOnlyNumbers("123");
-        Assertions.assertEquals(expected, actual);
-
-        actual = rp.checkIfInputIsOnlyNumbers("hej");
-        Assertions.assertNotEquals(expected, actual);
+        Assertions.assertTrue(rp.checkIfInputIsOnlyNumbers("123"));
+        Assertions.assertFalse(rp.checkIfInputIsOnlyNumbers("hej"));
     }
 
     @Test
     void checkIfSocialSecurityInputIsLongEnoughTest(){
-        boolean expected = true;
-        boolean actual = rp.checkIfSocialSecurityInputIsLongEnough("9006161234");
-        Assertions.assertEquals(expected, actual);
-
-        actual = rp.checkIfSocialSecurityInputIsLongEnough("900616");
-        Assertions.assertNotEquals(expected, actual);
+        Assertions.assertTrue(rp.checkIfSocialSecurityInputIsLongEnough("9006161234"));
+        Assertions.assertFalse(rp.checkIfSocialSecurityInputIsLongEnough("900616"));
     }
 
     @Test
@@ -150,6 +142,10 @@ class RegisterPersonTest {
     void validateInput(){
         String expected = "expected";
         String actual = rp.validateInput("expected");
+        Assertions.assertEquals(expected, actual);
+
+        expected = "0123456789";
+        actual = rp.validateInput("0123456789");
         Assertions.assertEquals(expected, actual);
 
         expected = "invalid number";

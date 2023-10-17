@@ -44,6 +44,7 @@ public class RegisterPerson {
                             break;
                         }
                     }
+
                     if (person != null && checkIfPersonIsPayingCustomer(person)) {
                         isPayingCustomer = true;
                         addWorkoutInFileForPayingCustomers(FILE_PATH_WORKOUT_SHEET, person);
@@ -100,7 +101,7 @@ public class RegisterPerson {
         try (BufferedReader bf = Files.newBufferedReader(Paths.get(filePath))) {
             String line;
             while ((line = bf.readLine()) != null) {
-                String[] customerSocialSecurityNumberAndName = line.trim().split(",");
+                String[] customerSocialSecurityNumberAndName = line.split(",");
                 String SSN = customerSocialSecurityNumberAndName[0].trim();
                 String name = customerSocialSecurityNumberAndName[1].trim();
                 String memberShipPaidDate = bf.readLine().trim();
@@ -184,7 +185,7 @@ public class RegisterPerson {
             scan = new Scanner(testString);
         }
 
-        input = scan.nextLine();
+        input = scan.nextLine().trim();
 
         if (input.equalsIgnoreCase(QUIT)) {
             System.out.println("Good bye!");
@@ -193,7 +194,7 @@ public class RegisterPerson {
             input = validateInput(input);
         }
 
-        return input.trim();
+        return input;
     }
 
     /**
@@ -204,15 +205,12 @@ public class RegisterPerson {
      */
     public String validateInput(String input) {
         if (input.isEmpty()) {
-            if (!test) {
-                System.out.println("Person or SSN input cannot be empty");
-            }
+            System.out.println("Person or SSN input cannot be empty");
             return INPUT_IS_EMPTY;
         } else if (checkIfInputIsOnlyNumbers(input)) {
             if (!checkIfSocialSecurityInputIsLongEnough(input)) {
-                if (!test) {
-                    System.out.println("The SSN you have entered is not long enough. 10 numbers are required");
-                }
+                System.out.println("The SSN you have entered is not long enough. 10 numbers are required");
+
                 return INVALID_NUMBER;
             }
         }
