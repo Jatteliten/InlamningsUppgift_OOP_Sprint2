@@ -230,9 +230,9 @@ public class RegisterPerson {
             return input + " is not a customer";
         } else {
             if (!payingCustomer) {
-                return input + " is a customer, but has not paid their fee";
+                return input + " is a customer, but has not paid their membership fee in the last year";
             } else {
-                return input + " is a paying customer";
+                return input + " is a customer with an active membership";
             }
         }
     }

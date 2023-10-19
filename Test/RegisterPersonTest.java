@@ -159,7 +159,7 @@ class RegisterPersonTest {
 
     @Test
     void print(){
-        String expected = "Daniel Isaksson is a paying customer";
+        String expected = "Daniel Isaksson is a customer with an active membership";
         String actual = rp.printIfPersonIsCustomer("Daniel Isaksson", true, true);
         Assertions.assertEquals(expected, actual);
 
@@ -167,7 +167,7 @@ class RegisterPersonTest {
         actual = rp.printIfPersonIsCustomer("Daniel Isaksson", false, false);
         Assertions.assertEquals(expected, actual);
 
-        expected = "Daniel Isaksson is a customer, but has not paid their fee";
+        expected = "Daniel Isaksson is a customer, but has not paid their membership fee in the last year";
         actual = rp.printIfPersonIsCustomer("Daniel Isaksson", true, false);
         Assertions.assertEquals(expected, actual);
     }
