@@ -169,6 +169,26 @@ public class RegisterPerson {
     }
 
     /**
+     * Validates user input, ensuring it is not empty or SSN is incorrectly formatted.
+     *
+     * @param input The input to validate.
+     * @return The validated input or a constant indicating an error (e.g., INPUT_IS_EMPTY, INVALID_NUMBER).
+     */
+    public String validateInput(String input) {
+        if (input.isEmpty()) {
+            System.out.println("Person or SSN input cannot be empty");
+            return INPUT_IS_EMPTY;
+        } else if (checkIfInputIsOnlyNumbers(input)) {
+            if (!checkIfSocialSecurityInputIsLongEnough(input)) {
+                System.out.println("The SSN you have entered is not the correct length. 10 numbers are required");
+
+                return INVALID_NUMBER;
+            }
+        }
+        return input;
+    }
+
+    /**
      * Reads a name or social security number from the user and performs validation.
      *
      * @param testString A test input string (for testing purposes) or null for user input.
@@ -194,26 +214,6 @@ public class RegisterPerson {
             input = validateInput(input);
         }
 
-        return input;
-    }
-
-    /**
-     * Validates user input, ensuring it is not empty or SSN is incorrectly formatted.
-     *
-     * @param input The input to validate.
-     * @return The validated input or a constant indicating an error (e.g., INPUT_IS_EMPTY, INVALID_NUMBER).
-     */
-    public String validateInput(String input) {
-        if (input.isEmpty()) {
-            System.out.println("Person or SSN input cannot be empty");
-            return INPUT_IS_EMPTY;
-        } else if (checkIfInputIsOnlyNumbers(input)) {
-            if (!checkIfSocialSecurityInputIsLongEnough(input)) {
-                System.out.println("The SSN you have entered is not long enough. 10 numbers are required");
-
-                return INVALID_NUMBER;
-            }
-        }
         return input;
     }
 
