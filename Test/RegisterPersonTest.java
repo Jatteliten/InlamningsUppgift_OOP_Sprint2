@@ -87,28 +87,32 @@ class RegisterPersonTest {
 
     @Test
     void checkIfPersonIsPayingCustomerTest(){
-        boolean expected = true;
-
         boolean actual = rp.checkIfPersonIsPayingCustomer(p1);
         if(p1.getMemberShipPaidDate().isAfter(LocalDate.now().minusYears(1))) {
-            Assertions.assertEquals(expected, actual);
+            Assertions.assertTrue(actual);
         }else{
-            Assertions.assertNotEquals(expected, actual);
+            Assertions.assertFalse(actual);
         }
 
         actual = rp.checkIfPersonIsPayingCustomer(p2);
         if(p2.getMemberShipPaidDate().isAfter(LocalDate.now().minusYears(1))) {
-            Assertions.assertEquals(expected, actual);
+            Assertions.assertTrue(actual);
         }else{
-            Assertions.assertNotEquals(expected, actual);
+            Assertions.assertFalse(actual);
         }
 
         actual = rp.checkIfPersonIsPayingCustomer(p3);
         if(p3.getMemberShipPaidDate().isAfter(LocalDate.now().minusYears(1))) {
-            Assertions.assertEquals(expected, actual);
+            Assertions.assertTrue(actual);
         }else{
-            Assertions.assertNotEquals(expected, actual);
+            Assertions.assertFalse(actual);
         }
+
+        Person newCustomer = new Person("0123456789", "New customer", LocalDate.now().minusMonths(6));
+        Assertions.assertTrue(rp.checkIfPersonIsPayingCustomer(newCustomer));
+
+        Person oldCustomer = new Person("0123456789", "Old customer", LocalDate.now().minusYears(2));
+        Assertions.assertFalse(rp.checkIfPersonIsPayingCustomer(oldCustomer));
     }
 
     @Test
